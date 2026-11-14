@@ -1,0 +1,9 @@
+[connection]
+id=uconsole-lan
+type=wifi
+ssid=CHANGE-ME
+[wifi-security]
+key-mgmt=wpa-psk
+psk=CHANGE-ME
+[ipv4]
+method=automatic

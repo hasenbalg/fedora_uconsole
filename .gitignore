@@ -1,0 +1,8 @@
+*.dtbo
+*.o
+*.ko
+*.mod*
+seed.env
+secrets/
+*.keyfile
+!config/keyfile.template
