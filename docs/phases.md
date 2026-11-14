@@ -3,13 +3,23 @@
 A broken screen must never sit on the access path: each phase ends with the
 box reachable over SSH before the next one starts.
 
-## Phase 0 - reachable box (no hardware work)
-- Download Fedora Server 45 aarch64 raw image (+ CHECKSUM verify).
-- Write to SD, resize rootfs.
-- Seed: SSH pubkey (into initial user + root via first-boot script or
-  cloud-init-less injection), NetworkManager keyfile (WPA-PSK, see
-  `config/keyfile.template`), hostname `uconsole`.
-- Boot, log in over SSH from LAN. **Acceptance: `ssh` works headless, Wi-Fi joins.**
+## Phase 0 - reachable box (no card reader anywhere in the workflow)
+Constraint: the management host has no SD reader. uConsole boots its own media.
+- Download Fedora Server 45 aarch64 raw image (+ CHECKSUM verify) on mgmt host.
+- Write image to a **USB flash drive** on mgmt host; seed the drive's
+  filesystems (SSH pubkey + NetworkManager keyfile from
+  `config/keyfile.template`, hostname `uconsole`) via loop-mount; resize rootfs.
+- Boot uConsole from the stick with SD slot EMPTY (firmware default order
+  SD->USB; confirmed by community on uConsole CM4, incl. CM5). If the external
+  USB-A port shows no VBUS at firmware stage (one report), move the stick to
+  the internal USB port (proven by user reports booting SSD there).
+- SSH over seeded Wi-Fi. From inside the box, download the same seeded image
+  and `dd` to `/dev/mmcblk0` (the uConsole's own SD slot; NOTE: if the CM4 has
+  eMMC, the SD slot is hard-disabled and `/dev/mmcblk0` IS the eMMC - confirm
+  which target before writing).
+- Reboot from internal media. Keep the stick as rescue boot medium.
+- **Acceptance: `ssh` works headless from Wi-Fi on internal media; stick-free
+  boot reproducible.**
 
 ## Phase 1 - baseline services
 - dnf update; enable sshd, cockpit.socket; cockpit self-signed OK on LAN.

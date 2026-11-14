@@ -31,6 +31,9 @@ Status: **planning seeded, no hardware bringup yet.** See `docs/phases.md`.
 ## Constraints on record (base unit, CM4 core)
 - **g_ether over USB-C is physically impossible**: USB-C data lines (USB0_DP/DM)
   do not exist on the CM4 SODIMM; USB_OTGID strapped to GND via 1K.
+- **Management host has no SD card reader.** Workflow: seed a USB flash drive
+  there, boot the uConsole from it (community-confirmed on uConsole CM4), then
+  have the uConsole write+seed its own SD/eMMC from inside. See Phase 0.
 - **No Ethernet** (no expansion board fitted), **no external serial**. The
   keyboard's rear UART port flashes the keyboard's STM32 - it is not a Pi console.
 - Consequence: a card that is not seeded cannot be reached at first boot.
